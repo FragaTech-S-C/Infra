@@ -15,3 +15,21 @@ Frontend (React)
 Backend API (Node.js + Prisma)
         ↓
 PostgreSQL
+```
+---
+
+## 🛠️ Tecnologías utilizadas
+
+(De forma provisoria)
+
+- Docker
+- Docker Compose
+- PostgreSQL
+- Prisma ORM
+- Node.js
+- Express
+- React
+- OpenStreetMap
+- Leaflet        
+
+---
