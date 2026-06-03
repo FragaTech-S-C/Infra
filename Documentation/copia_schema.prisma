@@ -1,0 +1,153 @@
+generator client {
+  provider = "prisma-client"
+  output = "./generated"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model UsuarioNormal {
+  idusuario        Int                @id @default(autoincrement()) @map("idusuario")
+  nombre           String             @db.Text
+  apellido         String             @db.Text
+  correo           String             @unique @db.Text
+  contrasena       String             @db.Text
+  fechaNacimiento  DateTime           @map("fecha_nacimiento") @db.Date
+  fechaRegistro    DateTime           @map("fecha_registro") @db.Date
+  telefono         String             @unique @db.Text
+  
+  // Relaciones
+  intereses        InteresesUsuario[]
+  tareasEventos    TareasEventos[]
+
+  @@map("usuario_normal")
+}
+
+model UsuarioDocente {
+  idusuariodocente Int             @id @default(autoincrement()) @map("idusuariodocente")
+  nombreD          String          @map("nombre_d") @db.Text
+  apellidoD        String          @map("apellido_d") @db.Text
+  correoD          String          @unique @map("correo_d") @db.Text
+  contrasenaD      String          @map("contrasena_d") @db.Text
+  documentoD       Int             @unique @map("documento_d")
+  fechaNacimientoD DateTime        @map("fecha_nacimiento_d") @db.Date
+  fechaRegistroD   DateTime        @map("fecha_registro_d") @db.Date
+  telefonoD        String          @unique @map("telefono_d") @db.Text
+  
+  // Relaciones
+  tareasEventos    TareasEventos[]
+
+  @@map("usuario_docente")
+}
+
+model Instituciones {
+  idinstitucion     Int       @id @default(autoincrement()) @map("idinstitucion")
+  nombreInstitucion String    @map("nombre_institucion") @db.Text
+  localidad         String    @db.Text
+  provincia         String    @db.Text
+  pais              String    @db.Text
+  correoInstitucion String    @unique @map("correo_institucion") @db.Text
+  telefonoInstitucion String  @unique @map("telefono_institucion") @db.Text
+  
+  // Relaciones
+  eventos           Eventos[]
+
+  @@map("instituciones")
+}
+
+model Intereses {
+  idintereses   Int                @id @default(autoincrement()) @map("idintereses")
+  nombreInteres String?            @map("nombre_interes") @db.Text
+  
+  // Relaciones
+  usuarios      InteresesUsuario[]
+  eventos       Eventos[]
+
+  @@map("intereses")
+}
+
+model InteresesUsuario {
+  usuarioId Int           @map("usuario_id")
+  interesId Int           @map("interes_id")
+  
+  usuario   UsuarioNormal @relation(fields: [usuarioId], references: [idusuario], onDelete: Cascade)
+  interes   Intereses     @relation(fields: [interesId], references: [idintereses], onDelete: Cascade)
+
+  @@id([usuarioId, interesId]) 
+  @@map("intereses_usuario")
+}
+
+model Ubicaciones {
+  idubicacion Int       @id @default(autoincrement()) @map("idubicacion")
+  alias       String    @db.Text
+  direccion   String    @db.Text
+  latitud     Decimal   @db.Decimal(10, 8)
+  longitud    Decimal   @db.Decimal(11, 8)
+  
+  eventos     Eventos[]
+
+  @@map("ubicaciones")
+}
+
+model Eventos {
+  idevento      Int               @id @default(autoincrement()) @map("idevento")
+  institucionId Int               @map("institucion_id")
+  ubicacionId   Int               @map("ubicacion_id")
+  titulo        String            @db.Text
+  descripcion   String?           @db.Text
+  fechaInicio   DateTime          @map("fecha_inicio") @db.Timestamptz
+  fechaFinal    DateTime          @map("fecha_final") @db.Timestamptz
+  categoriaId   Int?              @map("categoria")
+
+  institucion   Instituciones     @relation(fields: [institucionId], references: [idinstitucion], onDelete: Cascade)
+  ubicacion     Ubicaciones       @relation(fields: [ubicacionId], references: [idubicacion], onDelete: Cascade)
+  categoria     Intereses?        @relation(fields: [categoriaId], references: [idintereses], onDelete: SetNull)
+  
+  archivos      ArchivosEventos[]
+  notas         NotasEvento[]
+  tareas        TareasEventos[]
+
+  @@map("eventos")
+}
+
+model ArchivosEventos {
+  idarchivo    Int      @id @default(autoincrement()) @map("idarchivo")
+  eventoId     Int      @map("evento_id")
+  aliasArchivo String   @map("alias_archivo") @db.Text
+  rutaUrl      String   @map("ruta_url") @db.Text
+  tipoArchivo  String?  @map("tipo_archivo") @db.Text
+  fechaSubida  DateTime @map("fecha_subida") @db.Timestamptz
+
+  evento       Eventos  @relation(fields: [eventoId], references: [idevento], onDelete: Cascade)
+
+  @@map("archivos_eventos")
+}
+
+model NotasEvento {
+  idnota        Int      @id @default(autoincrement()) @map("idnota")
+  eventoNId     Int      @map("evento_n_id")
+  contenidoNota String   @map("contenido_nota") @db.Text
+  fechaCreacion DateTime @map("fecha_creacion") @db.Timestamptz
+
+  evento        Eventos  @relation(fields: [eventoNId], references: [idevento], onDelete: Cascade)
+
+  @@map("notas_evento")
+}
+
+model TareasEventos {
+  idtarea       Int             @id @default(autoincrement()) @map("idtarea")
+  usuarioTId    Int?            @map("usuario_t_id")
+  usuariodTId   Int?            @map("usuariod_t_id")
+  eventoTId     Int             @map("evento_t_id")
+  tituloTarea   String          @map("titulo_tarea") @db.Text
+  descripcion   String          @db.Text
+  fechaLimite   DateTime?       @map("fecha_limite") @db.Date
+
+  // Relaciones
+  usuario       UsuarioNormal?  @relation(fields: [usuarioTId], references: [idusuario], onDelete: SetNull)
+  docente       UsuarioDocente? @relation(fields: [usuariodTId], references: [idusuariodocente], onDelete: SetNull)
+  evento        Eventos         @relation(fields: [eventoTId], references: [idevento], onDelete: Cascade)
+
+  @@map("tareas_eventos")
+}
