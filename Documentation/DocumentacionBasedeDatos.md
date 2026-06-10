@@ -37,7 +37,7 @@ Tabla que almacena los datos de los usuarios no institucionales o de alumnos de 
 
 | Campo SQL | Campo Prisma | Descripción |
 | :--- | :--- | :--- |
-| `idusuario` | `idusuario` | PK |
+| `idusuario` | `id` | PK |
 | `nombre` | `nombre` | Nombre de pila del usuario |
 | `apellido` | `apellido` | Apellido de pila del usuario |
 | `correo` | `correo` | Correo electrónico (único) del usuario |
