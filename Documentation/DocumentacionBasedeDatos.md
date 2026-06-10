@@ -14,6 +14,7 @@ A continuación se especifican los tipos de datos y propiedades utilizadas para 
 
 * **`SERIAL`**: Formato propio de PostgreSQL y necesario en las PK (Primary Key). Se trata de un campo numerico unico (en su tabla), autoincremental (= AUTOINCREMENT) y sin posibilidad de ser nulo (=NOT NULL).
 * **`TEXT`**: Una cadena de caracteres sin límite (en la practica).
+* **`VARCHAR`**: Una cadena de caracteres con límite especificado.
 * **`INT`**: Número entero.
 * **`UNIQUE`**: Campo único, el dato en su interior no se puede repetir en la misma tabla.
 * **`DATE`**: Fecha escrita en formato YYYY-MM-DD.
@@ -44,6 +45,8 @@ Tabla que almacena los datos de los usuarios no institucionales o de alumnos de 
 | `fecha_nacimiento` | `fechaNacimiento` | Fecha (en formato DATE) de nacimiento del usuario |
 | `fecha_registro` | `fechaRegistro` | Fecha (en formato DATE) en la que el usuario se registró en la aplicación |
 | `telefono` | `telefono` | Número de teléfono móvil (único) del usuario |
+| `dni` | `dni` | Número (único) correspondiente al Documento Nacional de Identidad (DNI) del usuario |
+
 
 ---
 
@@ -53,14 +56,8 @@ Tabla que almacena los datos de los usuarios pertenecientes a docentes de instit
 | Campo SQL | Campo Prisma | Descripción |
 | :--- | :--- | :--- |
 | `idusuariodocente` | `idusuariodocente` | PK |
-| `nombre_d` | `nombreD` | Nombre de pila del docente |
-| `apellido_d` | `apellidoD` | Apellido de pila del docente |
-| `correo_d` | `correoD` | Correo electrónico (único) del docente |
-| `constrasena_d` | `contrasenaD` | Contraseña del docente, idealmente cifrada |
-| `documento_d` | `documentoD` | Número correspondiente al Documento Nacional de Identidad (DNI) del docente |
-| `fecha_nacimiento_d` | `fechaNacimientoD` | Fecha (en formato DATE) de nacimiento del docente |
-| `fecha_registro_d` | `fechaRegistroD` | Fecha (en formato DATE) en la que el docente se registró en la aplicación |
-| `telefono_d` | `telefonoD` | Número de teléfono móvil (único) del docente |
+| `usuariod_id` | `usuariodId` | FK con referencia a usuario_normal(idusuario) |
+| `extra` | `extra` | Información extra de importancia relativa al usuario docente |
 
 ---
 
