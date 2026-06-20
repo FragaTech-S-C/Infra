@@ -1,0 +1,30 @@
+## POR FAVOR CONSULTAR LA DOCUMENTACIÓN DE DOCKER COMPOSE PRESENTE EN TODOS LOS REPOSITORIOS !!!
+
+version: "3.8"
+name: meetia
+services:
+  frontend:
+    build: ../MeetiaFrontend
+    ports:
+      - "5173:5173"
+    volumes:
+      - ../MeetiaFrontend:/app
+      - /app/node_modules
+    networks:
+      - fragatech-network
+
+  backend:
+    build: ../fragatech-backend
+    ports:
+      - "3002:3000"
+    volumes:
+      - ../fragatech-backend:/app
+      - /app/node_modules
+      - /app/dist
+    env_file:
+      - .env
+    networks:
+      - fragatech-network
+
+networks:
+  fragatech-network:
