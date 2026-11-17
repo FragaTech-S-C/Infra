@@ -3,24 +3,37 @@
 version: "3.8"
 name: meetia
 services:
+
+  nginx:
+    image: nginx:alpine
+    container_name: nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ./frontV2/dist:/usr/share/nginx/html  # Carpeta con tu frontend compilado
+    depends_on:
+      - backend
+    networks:
+      - fragatech-network
   frontend:
-    build: ../MeetiaFrontend
+    build: ../frontV2
     ports:
       - "5173:5173"
     volumes:
-      - ../MeetiaFrontend:/app
+      - ../frontV2:/app
       - /app/node_modules
     networks:
       - fragatech-network
 
   backend:
-    build: ../fragatech-backend
+    build: ../BackendV2
     ports:
       - "3002:3000"
     volumes:
-      - ../fragatech-backend:/app
+      - ../BackendV2:/app
       - /app/node_modules
-      - /app/dist
     env_file:
       - .env
     networks:
